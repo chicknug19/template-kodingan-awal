@@ -262,42 +262,10 @@
                 .module('customerListApp', [])
                 .controller('CustomerListController', CustomerListController);
 
-            CustomerListController.$inject = ['$scope', '$timeout'];
+            CustomerListController.$inject = ['$scope', '$timeout', '$http'];
 
-            function CustomerListController($scope, $timeout) {
-                // Dummy Data
-                var dummyCustomers = [
-                    {
-                        customerID: 1,
-                        fullName: 'John Doe',
-                        address1: '123 Main Street, Apartment 4B',
-                        phoneNumber: '+1-555-0101'
-                    },
-                    {
-                        customerID: 2,
-                        fullName: 'Jane Smith',
-                        address1: '456 Oak Avenue, Suite 200',
-                        phoneNumber: '+1-555-0102'
-                    },
-                    {
-                        customerID: 3,
-                        fullName: 'Michael Johnson',
-                        address1: '789 Pine Road, Building C',
-                        phoneNumber: '+1-555-0103'
-                    },
-                    {
-                        customerID: 4,
-                        fullName: 'Sarah Williams',
-                        address1: '321 Elm Street, Floor 5',
-                        phoneNumber: '+1-555-0104'
-                    },
-                    {
-                        customerID: 5,
-                        fullName: 'Robert Brown',
-                        address1: '654 Maple Drive, Unit 10',
-                        phoneNumber: '+1-555-0105'
-                    }
-                ];
+            function CustomerListController($scope, $timeout, $http) {
+                var allCustomers = [];
 
                 $scope.filter = {
                     keyword: ''
@@ -331,23 +299,39 @@
 
                 function loadCustomers(reset) {
                     $scope.isLoading = true;
+                    clearAlert();
 
-                    // Simulate API call delay
-                    $timeout(function () {
-                        var filtered = dummyCustomers;
+                    $http.get('/Customer/CustomerList/GetCustomerList')
+                        .then(function (response) {
+                            var payload = response.data || {};
+                            var items = payload.data || payload.Data || [];
 
-                        if ($scope.filter.keyword) {
-                            var keyword = $scope.filter.keyword.toLowerCase();
-                            filtered = dummyCustomers.filter(function (c) {
-                                return c.fullName.toLowerCase().includes(keyword) ||
-                                       (c.address1 && c.address1.toLowerCase().includes(keyword)) ||
-                                       (c.phoneNumber && c.phoneNumber.toLowerCase().includes(keyword));
-                            });
-                        }
+                            allCustomers = items;
+                            applyCustomerFilter();
 
-                        $scope.customers = filtered;
-                        $scope.isLoading = false;
-                    }, 500);
+                            $scope.isLoading = false;
+                        })
+                        .catch(function () {
+                            $scope.customers = [];
+                            $scope.isLoading = false;
+                            showAlert('danger', 'Failed to load customer data.');
+                        });
+                }
+
+                function applyCustomerFilter() {
+                    var filtered = allCustomers;
+
+                    if ($scope.filter.keyword) {
+                        var keyword = $scope.filter.keyword.toLowerCase();
+
+                        filtered = allCustomers.filter(function (c) {
+                            return (c.fullName || '').toLowerCase().includes(keyword) ||
+                                   (c.address1 || '').toLowerCase().includes(keyword) ||
+                                   (c.phoneNumber || '').toLowerCase().includes(keyword);
+                        });
+                    }
+
+                    $scope.customers = filtered;
                 }
 
                 function searchCustomers() {
@@ -356,7 +340,7 @@
                     }
 
                     clearAlert();
-                    loadCustomers(true);
+                    applyCustomerFilter();
                 }
 
                 function resetFilter() {
@@ -366,7 +350,7 @@
 
                     clearAlert();
                     $scope.filter.keyword = '';
-                    loadCustomers(true);
+                    applyCustomerFilter();
                 }
 
                 function openDeleteConfirmation(customer) {
@@ -402,16 +386,16 @@
                     $scope.deleteModal.errorMessage = '';
                     clearAlert();
 
-                    // Simulate API call
                     $timeout(function () {
-                        // Remove from dummy data
-                        var index = dummyCustomers.findIndex(function (c) {
+                        var index = allCustomers.findIndex(function (c) {
                             return c.customerID === customer.customerID;
                         });
 
                         if (index > -1) {
-                            dummyCustomers.splice(index, 1);
+                            allCustomers.splice(index, 1);
                         }
+
+                        applyCustomerFilter();
 
                         var successMessage = 'Customer has been deleted successfully.';
                         $scope.deleteModal.visible = false;
@@ -419,7 +403,6 @@
                         $scope.deleteModal.errorMessage = '';
                         $scope.isDeleting = false;
 
-                        loadCustomers(true);
                         showAlert('success', successMessage);
                     }, 800);
                 }

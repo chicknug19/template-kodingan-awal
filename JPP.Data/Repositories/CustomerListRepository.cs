@@ -21,8 +21,8 @@ namespace JPP.Data.Repositories
         {
             const string sql = @"
             SELECT
-                CustomerID,
-                ISNULL(FirstName, '') + ' ' + ISNULL(LastName, '') AS FullName,
+                ID,
+                ISNULL(FirstName, '') + ' ' + ISNULL(MiddleName, '') + ' ' + ISNULL(LastName, ' ') AS FullName,
                 Address1,
                 PhoneNumber
             FROM BIZ_Customer;";
