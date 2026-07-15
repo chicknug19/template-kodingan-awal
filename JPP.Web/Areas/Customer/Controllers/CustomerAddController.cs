@@ -11,7 +11,7 @@ namespace JPP.Web.Areas.Admin.Controllers
     {
         protected override bool RequireLogin => true;
 
-        public IActionResult Index()
+        public IActionResult CustomerAddPage()
         {
             return View();
         }
