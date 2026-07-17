@@ -24,21 +24,23 @@ namespace JPP.Data.Repositories
 
             const string sql = @"
                 SELECT
-                    ID AS CustomerID,
-                    EventId,
-                    ISNULL(FirstName, '') + ' ' + ISNULL(MiddleName, '') + ' ' + ISNULL(LastName, ' ') AS FullName,
-                    Address1,
-                    PhoneNumber
-                FROM BIZ_Customer
+                    c.ID AS CustomerID,
+                    ISNULL(c.FirstName, '') + ' ' + ISNULL(c.MiddleName, '') + ' ' + ISNULL(c.LastName, ' ') AS FullName,
+                    c.Address1,
+                    c.PhoneNumber,
+                    c.EventID AS EventId,
+                    e.Name AS EventName
+                FROM BIZ_Customer c
+                LEFT JOIN BIZ_CustomerEvent e ON e.Id = c.EventID
                 WHERE
                     (
                         @Keyword = ''
-                        OR CAST(ID AS NVARCHAR(50)) LIKE '%' + @Keyword + '%'
-                        OR ISNULL(CAST(FirstName AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
-                        OR ISNULL(CAST(MiddleName AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
-                        OR ISNULL(CAST(LastName AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
-                        OR ISNULL(CAST(Address1 AS NVARCHAR(255)), '') LIKE '%' + @Keyword + '%'
-                        OR ISNULL(CAST(PhoneNumber AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
+                        OR CAST(c.ID AS NVARCHAR(50)) LIKE '%' + @Keyword + '%'
+                        OR ISNULL(CAST(c.FirstName AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
+                        OR ISNULL(CAST(c.MiddleName AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
+                        OR ISNULL(CAST(c.LastName AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
+                        OR ISNULL(CAST(c.Address1 AS NVARCHAR(255)), '') LIKE '%' + @Keyword + '%'
+                        OR ISNULL(CAST(c.PhoneNumber AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
                     )
                 ORDER BY FullName ASC
                 OFFSET @Skip ROWS

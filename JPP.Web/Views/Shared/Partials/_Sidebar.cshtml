@@ -80,6 +80,20 @@
             </div>
         </div>
 
+        <div class="menu-label">Event</div>
+
+        <button class="menu-toggle" data-bs-toggle="collapse" data-bs-target="#EventMenu">
+            <i class="bi bi-person-lines-fill"></i>
+            <span>Event</span>
+            <i class="bi bi-chevron-right menu-arrow"></i>
+        </button>
+
+        <div class="collapse" id="EventMenu">
+            <div class="submenu">
+                <a asp-area="Event" asp-controller="EventList" asp-action="Index">Event List</a>
+            </div>
+        </div>
+
         <div class="menu-label">POS</div>
         
         <button class="menu-toggle" data-bs-toggle="collapse" data-bs-target="#POSSalesMenu">
