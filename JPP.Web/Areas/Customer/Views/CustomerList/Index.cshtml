@@ -131,6 +131,10 @@
                         <th class="sortable-th">
                             Phone
                         </th>
+
+                        <th class="sortable-th">
+                            Event Name
+                        </th>
                         <th class="text-center action-col">Action</th>
                     </tr>
                 </thead>
@@ -154,11 +158,15 @@
                             <span class="text-muted" ng-if="!customer.phoneNumber">-</span>
                         </td>
 
+                        <td data-label="Event Name">
+                            <span ng-bind="customer.eventName || '-'"></span>
+                        </td>
+
                         <td class="text-center action-sticky" data-label="Action">
                             <div class="table-action-icons">
-                                <a href="/Customer/CustomerEdit/Edit?id={{ customer.customerID }}" 
-                                class="btn-action-icon btn-edit"
-                                title="Edit">
+                                <a href="/Customer/CustomerEdit/Edit?id={{ customer.customerID }}"
+                                   class="btn-action-icon btn-edit"
+                                   title="Edit">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                             </div>
