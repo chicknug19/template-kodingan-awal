@@ -59,8 +59,14 @@ builder.Services.AddScoped<ICustomerListService, CustomerListService>();
 builder.Services.AddScoped<ICustomerAddRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerAddService, CustomerAddService>();
 
-builder.Services.AddScoped<IEventRepository, EventRepository>();
-builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IEventDropdownRepository, EventDropdownRepository>();
+builder.Services.AddScoped<IEventDropdownService, EventDropdownService>();
+
+builder.Services.AddScoped<IEventAddRepository, EventAddRepository>();
+builder.Services.AddScoped<IEventAddService, EventAddService>();
+
+builder.Services.AddScoped<IEventListRepository, EventListRepository>();
+builder.Services.AddScoped<IEventListService, EventListService>();
 
 builder.Services.AddScoped<IEventListRepository, EventListRepository>();
 builder.Services.AddScoped<IEventListService, EventListService>();
