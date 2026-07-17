@@ -10,6 +10,6 @@ namespace JPP.Data.Interfaces
     public interface IEventAddRepository
     {
         Task<bool> CodeExistsAsync(string code);
-        Task<int> CreateEventAsync(EventRequest request);
+        Task<int> CreateEventAsync(EventRequestDto request);
     }
 }

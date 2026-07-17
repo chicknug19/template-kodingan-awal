@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace JPP.Models.Event.Request
 {
-    public class EventRequest
+    public class EventRequestDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

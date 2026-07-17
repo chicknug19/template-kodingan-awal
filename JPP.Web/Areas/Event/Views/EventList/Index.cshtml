@@ -5,24 +5,26 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div ng-app="customerListApp"
-     ng-controller="CustomerListController"
+<!-- PERBAIKAN: ng-app diubah menjadi eventListApp -->
+<div ng-app="eventListApp"
+     ng-controller="EventListController"
      ng-cloak>
 
     @Html.AntiForgeryToken()
 
     <div class="admin-page-header mb-4">
         <div>
-            <span class="admin-eyebrow">Admin</span>
-            <h3>Customer List</h3>
-            <p>Manage customer master data including name, address, and phone number.</p>
+            <span class="admin-eyebrow">Event Module</span>
+            <h3>Event List</h3>
+            <p>Manage Event master data including code, name, and description.</p>
         </div>
 
         <div class="admin-page-actions">
-            <a href="/Event/CustomerAdd/"
+            <!-- PERBAIKAN: Tombol Add mengarah ke EventAddPage -->
+            <a href="/Event/EventAdd/EventAddPage"
                class="btn btn-main">
                 <i class="bi bi-plus-lg me-2"></i>
-                Add
+                Add Event
             </a>
         </div>
     </div>
@@ -55,10 +57,10 @@
 
     <div class="crm-card mb-4">
         <div class="section-title">
-            <h5>Filter Customer</h5>
+            <h5>Filter Event</h5>
         </div>
 
-        <form ng-submit="searchCustomers()">
+        <form ng-submit="searchEvents()">
             <div class="row g-3 align-items-end">
                 <div class="col-xl-6 col-md-6">
                     <label class="form-label admin-form-label">Keyword</label>
@@ -67,7 +69,7 @@
                         <input type="text"
                                ng-model="filter.keyword"
                                class="form-control"
-                               placeholder="Search by name, address, or phone" />
+                               placeholder="Search by event code, name, or description" />
                     </div>
                 </div>
 
@@ -93,17 +95,17 @@
     <div class="crm-card">
         <div class="store-table-header">
             <div>
-                <h5>Customer Data</h5>
+                <h5>Event Data</h5>
                 <p>
                     Showing
-                    <span ng-bind="customers.length"></span>
-                    customer record(s)
+                    <span ng-bind="events.length"></span>
+                    event record(s)
                 </p>
             </div>
 
             <button type="button"
                     class="btn btn-soft btn-sm"
-                    ng-click="loadCustomers(true)"
+                    ng-click="loadEvents(true)"
                     ng-disabled="isBusy()">
                 <i class="bi bi-arrow-clockwise me-1" ng-class="{ 'store-spin': isBusy() }"></i>
                 Refresh
@@ -114,44 +116,83 @@
             <table class="table align-middle">
                 <thead>
                     <tr>
-                        <th>Event Id</th>
-                        <th>Event Name</th>
-                        <th>Code</th>
-                        <th>Description</th>
-                        <th class="text-end">Action</th>
+                        <th class="sortable-th">
+                            <button type="button"
+                                    class="store-sort-button"
+                                    ng-class="{ 'active': isSorted('code') }"
+                                    ng-click="changeSort('code')">
+                                Event Code
+                                <i class="bi" ng-class="getSortIcon('code')"></i>
+                            </button>
+                        </th>
+
+                        <th class="sortable-th">
+                            <button type="button"
+                                    class="store-sort-button"
+                                    ng-class="{ 'active': isSorted('name') }"
+                                    ng-click="changeSort('name')">
+                                Event Name
+                                <i class="bi" ng-class="getSortIcon('name')"></i>
+                            </button>
+                        </th>
+
+                        <th class="sortable-th">
+                            Description
+                        </th>
+
+                        <th class="text-center action-col">Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    <tr ng-repeat="event in events track by event.eventId">
-                        <td data-label="Event Id">
-                            <span ng-bind="event.eventId || '-'"></span>
+                    <!-- PERBAIKAN: Looping menggunakan 'event in events' -->
+                    <tr ng-repeat="event in events track by event.id">
+                        <td data-label="Event Code">
+                            <span class="badge bg-light text-dark border" ng-bind="event.code || '-'"></span>
                         </td>
 
                         <td data-label="Event Name">
-                            <span ng-bind="event.eventName || '-'"></span>
-                        </td>
-
-                        <td data-label="Code">
-                            <span ng-bind="event.code || '-'"></span>
+                            <strong ng-bind="event.name || '-'"></strong>
                         </td>
 
                         <td data-label="Description">
-                            <span ng-bind="event.description || '-'"></span>
+                            <span class="text-muted" ng-bind="event.description || '-'"></span>
                         </td>
 
-                        <td class="text-end">
-                            <div class="d-flex gap-2 justify-content-end">
-                                <a href="#" class="btn btn-soft btn-sm">Edit</a>
+                        <td class="text-center action-sticky" data-label="Action">
+                            <div class="table-action-icons">
+                                <a href="/Event/EventEdit/Edit?id={{ event.id }}"
+                                   class="btn-action-icon btn-edit"
+                                   title="Edit">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+
+                                <button type="button"
+                                        class="btn-action-icon btn-delete"
+                                        title="Delete"
+                                        ng-click="openDeleteConfirmation(event)"
+                                        ng-disabled="isBusy()">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
                             </div>
                         </td>
                     </tr>
 
                     <tr ng-if="events.length === 0 && !isLoading">
-                        <td colspan="5">
+                        <td colspan="4">
                             <div class="admin-empty-state">
-                                <i class="bi bi-inbox"></i>
+                                <i class="bi bi-calendar-x"></i>
                                 <h5>No events found</h5>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr ng-if="isLoading">
+                        <td colspan="4">
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-secondary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -160,6 +201,7 @@
         </div>
     </div>
 
+    <!-- Modal Delete -->
     <div class="delete-confirm-backdrop"
          ng-if="deleteModal.visible"
          ng-click="closeDeleteConfirmation()">
@@ -173,8 +215,8 @@
                 </div>
 
                 <div>
-                    <h5>Delete Customer?</h5>
-                    <p>This action will remove the customer record.</p>
+                    <h5>Delete Event?</h5>
+                    <p>This action will remove the event record.</p>
                 </div>
 
                 <button type="button"
@@ -188,14 +230,14 @@
             <div class="delete-confirm-body">
                 <div class="delete-store-preview">
                     <div class="delete-store-avatar">
-                        <i class="bi bi-person"></i>
+                        <i class="bi bi-calendar-event"></i>
                     </div>
 
                     <div class="delete-store-info">
-                        <strong ng-bind="deleteModal.customer.fullName || '-'"></strong>
+                        <strong ng-bind="deleteModal.event.name || '-'"></strong>
                         <div>
-                            <span ng-if="deleteModal.customer.address1">
-                                {{ deleteModal.customer.address1 }}
+                            <span ng-if="deleteModal.event.code">
+                                Code: {{ deleteModal.event.code }}
                             </span>
                         </div>
                     </div>
@@ -204,7 +246,7 @@
                 <div class="delete-warning-box">
                     <i class="bi bi-exclamation-triangle"></i>
                     <span>
-                        Are you sure you want to delete this customer?
+                        Are you sure you want to delete this event?
                     </span>
                 </div>
 
@@ -224,19 +266,18 @@
 
                 <button type="button"
                         class="btn btn-delete-confirm"
-                        ng-click="confirmDeleteCustomer()"
+                        ng-click="confirmDeleteEvent()"
                         ng-disabled="isDeleting">
                     <span class="spinner-border spinner-border-sm me-2"
                           ng-if="isDeleting"></span>
                     <i class="bi bi-trash3 me-2"
                        ng-if="!isDeleting"></i>
-                    <span ng-if="!isDeleting">Yes, Delete Customer</span>
+                    <span ng-if="!isDeleting">Yes, Delete Event</span>
                     <span ng-if="isDeleting">Deleting...</span>
                 </button>
             </div>
         </div>
     </div>
-
 </div>
 
 @section Scripts {
@@ -244,34 +285,37 @@
         (function () {
             'use strict';
 
+            // PERBAIKAN: Menggunakan eventListApp
             angular
-                .module('customerListApp', [])
-                .controller('CustomerListController', CustomerListController);
+                .module('eventListApp', [])
+                .controller('EventListController', EventListController);
 
-            CustomerListController.$inject = ['$scope', '$timeout', '$http'];
+            EventListController.$inject = ['$scope', '$timeout', '$http'];
 
-            function CustomerListController($scope, $timeout, $http) {
-                var allCustomers = [];
+            function EventListController($scope, $timeout, $http) {
+                var allEvents = [];
 
                 $scope.filter = {
                     keyword: ''
                 };
 
                 $scope.sort = {
-                    column: 'fullName',
+                    column: 'name',
                     direction: 'ASC'
                 };
 
                 $scope.changeSort = changeSort;
                 $scope.isSorted = isSorted;
                 $scope.getSortIcon = getSortIcon;
-                $scope.customers = [];
+
+                // PERBAIKAN: Variabel diubah menjadi events
+                $scope.events = [];
                 $scope.isLoading = false;
                 $scope.isDeleting = false;
 
                 $scope.deleteModal = {
                     visible: false,
-                    customer: null,
+                    event: null,
                     errorMessage: ''
                 };
 
@@ -280,21 +324,22 @@
                     message: ''
                 };
 
-                $scope.loadCustomers = loadCustomers;
-                $scope.searchCustomers = searchCustomers;
+                $scope.loadEvents = loadEvents;
+                $scope.searchEvents = searchEvents;
                 $scope.resetFilter = resetFilter;
                 $scope.openDeleteConfirmation = openDeleteConfirmation;
                 $scope.closeDeleteConfirmation = closeDeleteConfirmation;
-                $scope.confirmDeleteCustomer = confirmDeleteCustomer;
+                $scope.confirmDeleteEvent = confirmDeleteEvent;
                 $scope.clearAlert = clearAlert;
                 $scope.isBusy = isBusy;
 
-                loadCustomers(true);
+                loadEvents(true);
 
-                function loadCustomers(reset) {
+                function loadEvents(reset) {
                     $scope.isLoading = true;
                     clearAlert();
 
+                    // PERBAIKAN: Endpoint diarahkan ke EventListController yang ada di Area Event
                     $http.get('/Event/EventList/GetEventList', {
                         params: {
                             keyword: $scope.filter.keyword,
@@ -303,33 +348,32 @@
                         }
                     }).then(function (response) {
                         var payload = response.data || {};
-                        allCustomers = payload.data || [];
-                        $scope.customers = allCustomers;
-
+                        allEvents = payload.data || [];
+                        $scope.events = allEvents;
                         $scope.isLoading = false;
                     }).catch(function () {
-                        $scope.customers = [];
+                        $scope.events = [];
                         $scope.isLoading = false;
-                        showAlert('danger', 'Failed to load customer data.');
+                        showAlert('danger', 'Failed to load event data.');
                     });
                 }
 
-                function applyCustomerFilter() {
-                    var filtered = allCustomers;
+                function applyEventFilter() {
+                    var filtered = allEvents;
 
                     if ($scope.filter.keyword) {
                         var keyword = $scope.filter.keyword.toLowerCase();
 
-                        filtered = allCustomers.filter(function (c) {
-                            return (c.fullName || '').toLowerCase().includes(keyword) ||
-                                   (c.address1 || '').toLowerCase().includes(keyword) ||
-                                   (c.phoneNumber || '').toLowerCase().includes(keyword);
+                        filtered = allEvents.filter(function (e) {
+                            return (e.name || '').toLowerCase().includes(keyword) ||
+                                   (e.code || '').toLowerCase().includes(keyword) ||
+                                   (e.description || '').toLowerCase().includes(keyword);
                         });
                     }
 
-                    allCustomers = allCustomers || [];
-                    $scope.customers = filtered;
-                    applyCustomerSort();
+                    allEvents = allEvents || [];
+                    $scope.events = filtered;
+                    applyEventSort();
                 }
 
                 function changeSort(column) {
@@ -339,8 +383,7 @@
                         $scope.sort.column = column;
                         $scope.sort.direction = 'ASC';
                     }
-
-                    applyCustomerSort();
+                    applyEventSort();
                 }
 
                 function isSorted(column) {
@@ -351,14 +394,11 @@
                     if (!isSorted(column)) {
                         return 'bi-arrow-down-up';
                     }
-
-                    return $scope.sort.direction === 'ASC'
-                        ? 'bi-arrow-up'
-                        : 'bi-arrow-down';
+                    return $scope.sort.direction === 'ASC' ? 'bi-arrow-up' : 'bi-arrow-down';
                 }
 
-                function applyCustomerSort() {
-                    var sorted = angular.copy(allCustomers || []);
+                function applyEventSort() {
+                    var sorted = angular.copy(allEvents || []);
 
                     sorted.sort(function (a, b) {
                         var left = (a[$scope.sort.column] || '').toString().toLowerCase();
@@ -369,53 +409,43 @@
                         return 0;
                     });
 
-                    $scope.customers = sorted;
+                    $scope.events = sorted;
                 }
 
-                function searchCustomers() {
-                    if (isBusy()) {
-                        return;
-                    }
-
+                function searchEvents() {
+                    if (isBusy()) return;
                     clearAlert();
-                    applyCustomerFilter();
+                    applyEventFilter();
                 }
 
                 function resetFilter() {
-                    if (isBusy()) {
-                        return;
-                    }
-
+                    if (isBusy()) return;
                     clearAlert();
                     $scope.filter.keyword = '';
-                    applyCustomerFilter();
+                    applyEventFilter();
                 }
 
-                function openDeleteConfirmation(customer) {
-                    if (!customer || !customer.customerID) {
-                        return;
-                    }
+                function openDeleteConfirmation(eventItem) {
+                    if (!eventItem || !eventItem.id) return;
 
                     clearAlert();
-                    $scope.deleteModal.customer = customer;
+                    $scope.deleteModal.event = eventItem;
                     $scope.deleteModal.errorMessage = '';
                     $scope.deleteModal.visible = true;
                 }
 
                 function closeDeleteConfirmation() {
-                    if ($scope.isDeleting) {
-                        return;
-                    }
+                    if ($scope.isDeleting) return;
 
                     $scope.deleteModal.visible = false;
-                    $scope.deleteModal.customer = null;
+                    $scope.deleteModal.event = null;
                     $scope.deleteModal.errorMessage = '';
                 }
 
-                function confirmDeleteCustomer() {
-                    var customer = $scope.deleteModal.customer;
+                function confirmDeleteEvent() {
+                    var eventItem = $scope.deleteModal.event;
 
-                    if (!customer || !customer.customerID) {
+                    if (!eventItem || !eventItem.id) {
                         closeDeleteConfirmation();
                         return;
                     }
@@ -424,20 +454,21 @@
                     $scope.deleteModal.errorMessage = '';
                     clearAlert();
 
+                    // Simulasi API Delete (Ganti dengan $http.post jika sudah ada backend Delete)
                     $timeout(function () {
-                        var index = allCustomers.findIndex(function (c) {
-                            return c.customerID === customer.customerID;
+                        var index = allEvents.findIndex(function (e) {
+                            return e.id === eventItem.id;
                         });
 
                         if (index > -1) {
-                            allCustomers.splice(index, 1);
+                            allEvents.splice(index, 1);
                         }
 
-                        applyCustomerFilter();
+                        applyEventFilter();
 
-                        var successMessage = 'Customer has been deleted successfully.';
+                        var successMessage = 'Event has been deleted successfully.';
                         $scope.deleteModal.visible = false;
-                        $scope.deleteModal.customer = null;
+                        $scope.deleteModal.event = null;
                         $scope.deleteModal.errorMessage = '';
                         $scope.isDeleting = false;
 

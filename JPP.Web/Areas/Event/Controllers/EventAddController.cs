@@ -24,7 +24,7 @@ namespace JPP.Web.Areas.Customer.Controllers
         {
             var model = new EventDetailViewModel
             {
-                Form = new EventRequest(),
+                Form = new EventRequestDto(),
                 IsReadOnly = false
             };
 
@@ -33,7 +33,7 @@ namespace JPP.Web.Areas.Customer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Save(EventRequest form, string SubmitMode)
+        public async Task<IActionResult> Save(EventRequestDto form, string SubmitMode)
         {
             if (!ModelState.IsValid)
             {
