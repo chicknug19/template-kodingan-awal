@@ -56,11 +56,14 @@ builder.Services.AddScoped<IEmployeeDepartmentService, EmployeeDepartmentService
 builder.Services.AddScoped<ICustomerListRepository, CustomerListRepository>();
 builder.Services.AddScoped<ICustomerListService, CustomerListService>();
 
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<ICustomerService, CustomerAddService>();
+builder.Services.AddScoped<ICustomerAddRepository, CustomerRepository>();
+builder.Services.AddScoped<ICustomerAddService, CustomerAddService>();
 
-builder.Services.AddScoped<IEventRepository, EventRepository>();
-builder.Services.AddScoped<IEventService, EventService>();
+builder.Services.AddScoped<IEventDropdownRepository, EventDropdownRepository>();
+builder.Services.AddScoped<IEventDropdownService, EventDropdownService>();
+
+builder.Services.AddScoped<IEventAddRepository, EventAddRepository>();
+builder.Services.AddScoped<IEventAddService, EventAddService>();
 
 builder.Services.AddScoped<IOtpService, CellboxOtpService>();
 builder.Services.AddScoped<IAccountEmailService, AccountEmailService>();
