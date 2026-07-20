@@ -68,31 +68,23 @@
 
         <div class="menu-label">Customer</div>
 
-        <button class="menu-toggle" data-bs-toggle="collapse" data-bs-target="#CustomerMenu">
+        <a asp-area=""
+           asp-controller="Customer"
+           asp-action="CustomerList"
+           class="menu-link @(isDashboardActive ? "active" : "")">
             <i class="bi bi-person-lines-fill"></i>
             <span>Customer</span>
-            <i class="bi bi-chevron-right menu-arrow"></i>
-        </button>
-
-        <div class="collapse" id="CustomerMenu">
-            <div class="submenu">
-                <a asp-area="Customer" asp-controller="CustomerList" asp-action="Index">Customer List</a>
-            </div>
-        </div>
+        </a>
 
         <div class="menu-label">Event</div>
 
-        <button class="menu-toggle" data-bs-toggle="collapse" data-bs-target="#EventMenu">
+        <a asp-area=""
+           asp-controller="Event"
+           asp-action="EventList"
+           class="menu-link @(isDashboardActive ? "active" : "")">
             <i class="bi bi-person-lines-fill"></i>
             <span>Event</span>
-            <i class="bi bi-chevron-right menu-arrow"></i>
-        </button>
-
-        <div class="collapse" id="EventMenu">
-            <div class="submenu">
-                <a asp-area="Event" asp-controller="EventList" asp-action="Index">Event List</a>
-            </div>
-        </div>
+        </a>
 
         <div class="menu-label">POS</div>
         
