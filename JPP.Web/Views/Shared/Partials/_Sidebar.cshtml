@@ -14,11 +14,23 @@
 
     var isHRScopeActive = string.Equals(currentArea, "HR", StringComparison.OrdinalIgnoreCase);
 
+    var isCustomerScopeActive = string.Equals(currentArea, "Customer", StringComparison.OrdinalIgnoreCase);
+
+    var isEventScopeActive = string.Equals(currentArea, "Event", StringComparison.OrdinalIgnoreCase);
+
     var isEmployeeListActive = isHRScopeActive
         && string.Equals(currentController, "EmployeeList", StringComparison.OrdinalIgnoreCase);
 
     var isEmployeeDepartmentActive = isHRScopeActive
         && string.Equals(currentController, "EmployeeDepartment", StringComparison.OrdinalIgnoreCase);
+
+    var isCustomerActive = isCustomerScopeActive
+        || (!string.IsNullOrWhiteSpace(currentController)
+            && currentController.IndexOf("Customer", StringComparison.OrdinalIgnoreCase) >= 0);
+
+    var isEventActive = isEventScopeActive
+        || (!string.IsNullOrWhiteSpace(currentController)
+            && currentController.IndexOf("Event", StringComparison.OrdinalIgnoreCase) >= 0);
 }
 
 <aside class="crm-sidebar" id="sidebar">
@@ -71,7 +83,7 @@
         <a asp-area=""
            asp-controller="Customer"
            asp-action="CustomerList"
-           class="menu-link @(isDashboardActive ? "active" : "")">
+           class="menu-link @(isCustomerActive ? "active" : "")">
             <i class="bi bi-person-lines-fill"></i>
             <span>Customer</span>
         </a>
@@ -81,13 +93,13 @@
         <a asp-area=""
            asp-controller="Event"
            asp-action="EventList"
-           class="menu-link @(isDashboardActive ? "active" : "")">
+           class="menu-link @(isEventActive ? "active" : "")">
             <i class="bi bi-person-lines-fill"></i>
             <span>Event</span>
         </a>
 
         <div class="menu-label">POS</div>
-        
+
         <button class="menu-toggle" data-bs-toggle="collapse" data-bs-target="#POSSalesMenu">
             <i class="bi bi-cart-check"></i>
             <span>Sales</span>
