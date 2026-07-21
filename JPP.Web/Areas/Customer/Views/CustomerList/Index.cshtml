@@ -90,7 +90,7 @@
         </form>
     </div>
 
-    <div class="crm-card">
+    <div class="crm-card store-table-card">
         <div class="store-table-header">
             <div>
                 <h5>Customer Data</h5>
@@ -110,14 +110,11 @@
             </button>
         </div>
 
-        <div class="table-responsive">
-            <table class="table align-middle">
+        <div class="table-responsive store-table-wrapper store-table-scroll">
+            <table class="table align-middle store-table">
                 <thead>
                     <tr>
-                        <th class="sortable-th">
-                            FullName
-                        </th>
-
+                        <th class="sortable-th">FullName</th>
                         <th class="sortable-th">
                             <button type="button"
                                     class="store-sort-button"
@@ -127,14 +124,8 @@
                                 <i class="bi" ng-class="getSortIcon('address1')"></i>
                             </button>
                         </th>
-
-                        <th class="sortable-th">
-                            Phone
-                        </th>
-
-                        <th class="sortable-th">
-                            Event Name
-                        </th>
+                        <th class="sortable-th">Phone</th>
+                        <th class="sortable-th">Event Name</th>
                         <th class="text-center action-col">Action</th>
                     </tr>
                 </thead>
@@ -162,32 +153,13 @@
                             <span ng-bind="customer.eventName || '-'"></span>
                         </td>
 
-                        <td class="text-center action-sticky" data-label="Action">
+                        <td class="text-center action-sticky action-col" data-label="Action">
                             <div class="table-action-icons">
                                 <a href="/Customer/CustomerEdit/Edit?id={{ customer.customerID }}"
                                    class="btn-action-icon btn-edit"
                                    title="Edit">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr ng-if="customers.length === 0 && !isLoading">
-                        <td colspan="4">
-                            <div class="admin-empty-state">
-                                <i class="bi bi-inbox"></i>
-                                <h5>No customers found</h5>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr ng-if="isLoading">
-                        <td colspan="4">
-                            <div class="text-center py-4">
-                                <div class="spinner-border text-secondary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
-                                </div>
                             </div>
                         </td>
                     </tr>

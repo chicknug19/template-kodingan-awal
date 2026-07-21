@@ -90,7 +90,7 @@
         </form>
     </div>
 
-    <div class="crm-card">
+    <div class="crm-card store-table-card">
         <div class="store-table-header">
             <div>
                 <h5>Event Data</h5>
@@ -110,15 +110,15 @@
             </button>
         </div>
 
-        <div class="table-responsive">
-            <table class="table align-middle">
+        <div class="table-responsive store-table-wrapper store-table-scroll">
+            <table class="table align-middle store-table">
                 <thead>
                     <tr>
                         <th>No</th>
                         <th>Event Name</th>
                         <th>Code</th>
                         <th>Description</th>
-                        <th class="text-center">Action</th>
+                        <th class="text-center action-col">Action</th>
                     </tr>
                 </thead>
 
@@ -140,23 +140,13 @@
                             <span ng-bind="event.description || '-'"></span>
                         </td>
 
-
-                        <td class="text-center" data-label="Action">
-                            <div class="d-flex justify-content-center">
+                        <td class="text-center action-sticky action-col" data-label="Action">
+                            <div class="table-action-icons">
                                 <a href="/Event/EventEdit/Edit/{{ event.eventId }}"
-                                    class="btn-action-icon btn-edit"
-                                    title="Edit">
+                                   class="btn-action-icon btn-edit"
+                                   title="Edit">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                            </div>
-                        </td>
-                    </tr>
-
-                    <tr ng-if="events.length === 0 && !isLoading">
-                        <td colspan="5">
-                            <div class="admin-empty-state">
-                                <i class="bi bi-inbox"></i>
-                                <h5>No events found</h5>
                             </div>
                         </td>
                     </tr>
