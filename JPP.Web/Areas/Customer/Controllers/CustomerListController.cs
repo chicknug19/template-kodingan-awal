@@ -14,10 +14,17 @@ namespace JPP.Web.Areas.Customer.Controllers
         protected override bool RequireLogin => true;
 
         private readonly ICustomerListService _customerListService;
+        private readonly ICustomerStoreDropdownService _storeDropdownService;
+        private readonly IEventDropdownService _eventDropdownService;
 
-        public CustomerListController(ICustomerListService customerListService)
+        public CustomerListController(
+            ICustomerListService customerListService,
+            ICustomerStoreDropdownService storeDropdownService,
+            IEventDropdownService eventDropdownService)
         {
             _customerListService = customerListService;
+            _storeDropdownService = storeDropdownService;
+            _eventDropdownService = eventDropdownService;
         }
 
         [HttpGet]
@@ -32,20 +39,33 @@ namespace JPP.Web.Areas.Customer.Controllers
             try
             {
                 var result = await _customerListService.GetCustomerListAsync(filter);
-
                 return Json(result);
             }
             catch (Exception ex)
             {
                 return StatusCode(
                     StatusCodes.Status500InternalServerError,
-                    new 
-                    { 
-                        Success = false, 
+                    new
+                    {
+                        Success = false,
                         Message = $"Failed to load customer data. {ex.Message}",
                         StatusCode = StatusCodes.Status500InternalServerError
                     });
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetStoreOptions()
+        {
+            var stores = await _storeDropdownService.GetDropdownListAsync();
+            return Json(stores);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetEventOptions()
+        {
+            var events = await _eventDropdownService.GetDropdownListAsync();
+            return Json(events);
         }
     }
 }

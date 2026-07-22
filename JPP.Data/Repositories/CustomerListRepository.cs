@@ -42,6 +42,8 @@ namespace JPP.Data.Repositories
                         OR ISNULL(CAST(c.Address1 AS NVARCHAR(255)), '') LIKE '%' + @Keyword + '%'
                         OR ISNULL(CAST(c.PhoneNumber AS NVARCHAR(100)), '') LIKE '%' + @Keyword + '%'
                     )
+                    AND (@StoreId = 0 OR c.StoreID = @StoreId)
+                    AND (@EventId = 0 OR c.EventID = @EventId)
                 ORDER BY FullName ASC
                 OFFSET @Skip ROWS
                 FETCH NEXT @PageSize ROWS ONLY;";

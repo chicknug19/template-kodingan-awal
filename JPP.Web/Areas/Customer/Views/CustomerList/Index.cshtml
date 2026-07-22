@@ -87,6 +87,24 @@
                     </button>
                 </div>
             </div>
+
+            <div class="row g-3 align-items-end">
+                <div class="col-xl-6 col-md-6">
+                    <label class="form-label admin-form-label">Store</label>
+                    <select ng-model="filter.storeId" class="form-select">
+                        <option value="0">All</option>
+                        <option ng-repeat="store in storeOptions" value="{{ store.id }}">{{ store.name }}</option>
+                    </select>
+                </div>
+
+                <div class="col-xl-6 col-md-6">
+                    <label class="form-label admin-form-label">Event</label>
+                    <select ng-model="filter.eventId" class="form-select">
+                        <option value="0">All</option>
+                        <option ng-repeat="event in eventOptions" value="{{ event.id }}">{{ event.name }}</option>
+                    </select>
+                </div>
+            </div>
         </form>
     </div>
 
@@ -262,50 +280,36 @@
                 var allCustomers = [];
 
                 $scope.filter = {
-                    keyword: ''
+                    keyword: '',
+                    storeId: 0,
+                    eventId: 0
                 };
 
-                $scope.sort = {
-                    column: 'fullName',
-                    direction: 'ASC'
-                };
+                $scope.storeOptions = [];
+                $scope.eventOptions = [];
 
-                $scope.changeSort = changeSort;
-                $scope.isSorted = isSorted;
-                $scope.getSortIcon = getSortIcon;
-                $scope.customers = [];
-                $scope.isLoading = false;
-                $scope.isDeleting = false;
+                loadFilterOptions();
+                loadCustomers();
 
-                $scope.deleteModal = {
-                    visible: false,
-                    customer: null,
-                    errorMessage: ''
-                };
+                function loadFilterOptions() {
+                    $http.get('/Customer/CustomerList/GetStoreOptions').then(function (response) {
+                        $scope.storeOptions = response.data || [];
+                    });
 
-                $scope.alert = {
-                    type: '',
-                    message: ''
-                };
+                    $http.get('/Customer/CustomerList/GetEventOptions').then(function (response) {
+                        $scope.eventOptions = response.data || [];
+                    });
+                }
 
-                $scope.loadCustomers = loadCustomers;
-                $scope.searchCustomers = searchCustomers;
-                $scope.resetFilter = resetFilter;
-                $scope.openDeleteConfirmation = openDeleteConfirmation;
-                $scope.closeDeleteConfirmation = closeDeleteConfirmation;
-                $scope.confirmDeleteCustomer = confirmDeleteCustomer;
-                $scope.clearAlert = clearAlert;
-                $scope.isBusy = isBusy;
-
-                loadCustomers(true);
-
-                function loadCustomers(reset) {
+                function loadCustomers() {
                     $scope.isLoading = true;
                     clearAlert();
 
                     $http.get('/Customer/CustomerList/GetCustomerList', {
                         params: {
                             keyword: $scope.filter.keyword,
+                            storeId: $scope.filter.storeId,
+                            eventId: $scope.filter.eventId,
                             page: 1,
                             pageSize: 20
                         }
@@ -313,7 +317,7 @@
                         var payload = response.data || {};
                         allCustomers = payload.data || [];
                         $scope.customers = allCustomers;
-
+                        applyCustomerSort($scope.customers);
                         $scope.isLoading = false;
                     }).catch(function () {
                         $scope.customers = [];
@@ -385,7 +389,7 @@
                     }
 
                     clearAlert();
-                    applyCustomerFilter();
+                    loadCustomers();
                 }
 
                 function resetFilter() {
@@ -395,7 +399,9 @@
 
                     clearAlert();
                     $scope.filter.keyword = '';
-                    applyCustomerFilter();
+                    $scope.filter.storeId = 0;
+                    $scope.filter.eventId = 0;
+                    loadCustomers();
                 }
 
                 function openDeleteConfirmation(customer) {

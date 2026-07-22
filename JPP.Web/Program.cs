@@ -59,6 +59,9 @@ builder.Services.AddScoped<ICustomerListService, CustomerListService>();
 builder.Services.AddScoped<ICustomerAddRepository, CustomerRepository>();
 builder.Services.AddScoped<ICustomerAddService, CustomerAddService>();
 
+builder.Services.AddScoped<ICustomerStoreDropdownRepository, CustomerStoreDropdownRepository>();
+builder.Services.AddScoped<ICustomerStoreDropdownService, CustomerStoreDropdownService>();
+
 builder.Services.AddScoped<IEventDropdownRepository, EventDropdownRepository>();
 builder.Services.AddScoped<IEventDropdownService, EventDropdownService>();
 

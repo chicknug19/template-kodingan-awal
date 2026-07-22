@@ -17,6 +17,9 @@ namespace JPP.Commons.Extensions
         {
             ArgumentNullException.ThrowIfNull(filter);
 
+            filter.StoreId = "0";
+            filter.EventId = "0";
+
             filter.Keyword = filter.Keyword.NormalizeNullableText();
 
             filter.NormalizePagingAndSorting(
