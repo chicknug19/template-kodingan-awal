@@ -77,6 +77,9 @@ builder.Services.AddScoped<IAccountEmailService, AccountEmailService>();
 builder.Services.AddScoped<ICustomerEditRepository, CustomerEditRepository>();
 builder.Services.AddScoped<ICustomerEditService, CustomerEditService>();
 
+builder.Services.AddScoped<IStoreDropdownRepository, StoreDropdownRepository>();
+builder.Services.AddScoped<IStoreDropdownService, StoreDropdownService>();
+
 
 var app = builder.Build();
 
