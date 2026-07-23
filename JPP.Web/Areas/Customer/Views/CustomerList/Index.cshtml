@@ -244,16 +244,24 @@
                 loadCustomers();
 
                 
+                // Remove the duplicate/conflicting function declarations and use this single definition:
                 function openDiagnosticModal(customer) {
+                    if (!customer) return;
+                    
                     var customerId = customer.customerID || customer.CustomerID || customer.Id;
+                    var eventId = customer.eventId || customer.EventId || 0;
+                    
                     if (!customerId) return;
 
-                    $scope.diagnosticModal.visible = true;
+                    $scope.diagnosticModal.visible = true; // Matches ng-if="diagnosticModal.visible" in HTML
                     $scope.diagnosticModal.customer = customer;
                     $scope.diagnosticModal.errorMessage = '';
                     $scope.diagnosticModal.newEntry = { type: 'Skin', note: '' };
-                    loadDiagnosticEntries(customerId);
+                    
+                    loadDiagnosticEntries(customerId, eventId);
                 }
+
+                $scope.openDiagnosticModal = openDiagnosticModal;
 
                 function closeDiagnosticModal() {
                     if ($scope.diagnosticModal.isSaving) return;
@@ -262,17 +270,21 @@
                     $scope.diagnosticModal.entries = [];
                 }
 
-                function loadDiagnosticEntries(customerId) {
+                function loadDiagnosticEntries(customerId, eventId) {
                     $scope.diagnosticModal.isLoading = true;
 
-                    $http.get('/Customer/CustomerList/GetDiagnosticList', { params: { customerId: customerId } })
-                        .then(function (response) {
-                            $scope.diagnosticModal.entries = response.data || [];
-                            $scope.diagnosticModal.isLoading = false;
-                        }).catch(function () {
-                            $scope.diagnosticModal.isLoading = false;
-                            $scope.diagnosticModal.errorMessage = 'Failed to load diagnostic history.';
-                        });
+                    $http.get('/Customer/CustomerList/GetDiagnosticList', { 
+                        params: { customerId: customerId, eventId: eventId  } 
+                    })
+                    .then(function (response) {
+                        $scope.diagnosticModal.entries = response.data.data || response.data || [];
+                        $scope.diagnosticModal.isLoading = false;
+                    })
+                    .catch(function (error) {
+                        $scope.diagnosticModal.isLoading = false;
+                        $scope.diagnosticModal.errorMessage = 'Failed to load diagnostic history.';
+                        console.error('Error loading diagnostic list:', error);
+                    });
                 }
 
                 function saveDiagnosticEntry() {

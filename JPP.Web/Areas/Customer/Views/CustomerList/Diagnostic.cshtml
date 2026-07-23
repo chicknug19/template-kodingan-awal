@@ -17,9 +17,9 @@
             <div class="diagnostic-entry" ng-repeat="entry in diagnosticModal.entries track by $index">
                 <div class="diagnostic-entry-label">
                     <strong ng-bind="(entry.type || entry.Type) + ':'"></strong>
-                    <span ng-bind="entry.note || entry.Note"></span>
+                    <span ng-bind="entry.description || entry.Description || entry.note || entry.Note"></span>
                 </div>
-                <div class="diagnostic-entry-date" ng-bind="(entry.date || entry.Date) | date:'dd-MMM-yyyy'"></div>
+                <div class="diagnostic-entry-date" ng-bind="(entry.logDate || entry.LogDate || entry.date || entry.Date) | date:'dd-MMM-yyyy'"></div>
             </div>
 
             <div class="text-muted small" ng-if="diagnosticModal.entries.length === 0">

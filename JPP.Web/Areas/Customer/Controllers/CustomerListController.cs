@@ -16,15 +16,18 @@ namespace JPP.Web.Areas.Customer.Controllers
         private readonly ICustomerListService _customerListService;
         private readonly ICustomerStoreDropdownService _storeDropdownService;
         private readonly IEventDropdownService _eventDropdownService;
+        private readonly ICustomerDiagnosticService _customerDiagnosticService;
 
         public CustomerListController(
             ICustomerListService customerListService,
             ICustomerStoreDropdownService storeDropdownService,
-            IEventDropdownService eventDropdownService)
+            IEventDropdownService eventDropdownService,
+            ICustomerDiagnosticService customerDiagnosticService)
         {
             _customerListService = customerListService;
             _storeDropdownService = storeDropdownService;
             _eventDropdownService = eventDropdownService;
+            _customerDiagnosticService = customerDiagnosticService;
         }
 
         [HttpGet]
@@ -66,6 +69,27 @@ namespace JPP.Web.Areas.Customer.Controllers
         {
             var events = await _eventDropdownService.GetDropdownListAsync();
             return Json(events);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDiagnosticList([FromQuery] int customerId, [FromQuery] int eventId = 0)
+        {
+            try
+            {
+                var result = await _customerDiagnosticService.GetCustomerDiagnosticAsync(customerId, eventId);
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(
+                    StatusCodes.Status500InternalServerError,
+                    new
+                    {
+                        Success = false,
+                        Message = $"Failed to load diagnostic history. {ex.Message}",
+                        StatusCode = StatusCodes.Status500InternalServerError
+                    });
+            }
         }
     }
 }
