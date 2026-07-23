@@ -45,7 +45,14 @@ namespace JPP.Web.Areas.Customer.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+            var events = await _eventService.GetDropdownListAsync();
             var stores = await _storeService.GetStoreDropdownListAsync();
+
+            model.EventOptions = events.Select(e => new SelectListItem
+            {
+                Value = e.Id.ToString(),
+                Text = $"{e.Code} - {e.Name}"
+            });
 
             model.StoreOptions = stores.Select(s => new SelectListItem
             {
@@ -149,12 +156,19 @@ namespace JPP.Web.Areas.Customer.Controllers
         {
             if (!ModelState.IsValid)
             {
+                var events = await _eventService.GetDropdownListAsync();
                 var stores = await _storeService.GetStoreDropdownListAsync();
 
                 var model = new CustomerDetailViewModel
                 {
                     Form = form,
                     IsReadOnly = false,
+                    EventName = form.EventName ?? string.Empty,
+                    EventOptions = events.Select(e => new SelectListItem
+                    {
+                        Value = e.Id.ToString(),
+                        Text = $"{e.Code} - {e.Name}"
+                    }),
                     StoreOptions = stores.Select(s => new SelectListItem
                     {
                         Value = s.ID.ToString(),

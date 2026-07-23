@@ -42,7 +42,9 @@ namespace JPP.Services.Services
                     Address1 = customer.Address1,
                     EventId = customer.EventId,
                     EventName = customer.EventName,
-                    StoreId = customer.StoreId
+                    StoreId = customer.StoreId,
+                    Age = customer.Age,
+                    AccountNumber = customer.AccountNumber
                 },
                 EventName = customer.EventName ?? string.Empty,
                 IsReadOnly = false
