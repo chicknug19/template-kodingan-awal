@@ -56,5 +56,17 @@ namespace JPP.Data.Repositories
 
             return newId;
         }
+
+
+        public async Task<bool> NameExistsAsync(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name)) return false;
+
+            const string sql = "SELECT COUNT(1) FROM BIZ_Event WHERE Name = @Name";
+            using var conn = _connFactory.Create();
+            return await conn.ExecuteScalarAsync<int>(sql, new { Name = name.Trim() }) > 0;
+        }
+
+
     }
 }

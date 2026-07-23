@@ -11,5 +11,6 @@ namespace JPP.Data.Interfaces
     {
         Task<bool> CodeExistsAsync(string code);
         Task<int> CreateEventAsync(EventDto request);
+        Task<bool> NameExistsAsync(string name);
     }
 }

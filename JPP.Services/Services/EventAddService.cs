@@ -26,6 +26,15 @@ namespace JPP.Services.Services
                     return BaseResult<int>.Fail("Invalid event data.", 400);
                 }
 
+                if (!string.IsNullOrWhiteSpace(request.Name))
+                {
+                    bool isNameExist = await _eventAddRepo.NameExistsAsync(request.Name);
+                    if (isNameExist)
+                    {
+                        return BaseResult<int>.Fail($"Event Name '{request.Name}' is already registered. Please choose a different name.", 400);
+                    }
+                }
+
                 if (!string.IsNullOrWhiteSpace(request.Code))
                 {
                     bool isCodeExist = await _eventAddRepo.CodeExistsAsync(request.Code);
@@ -47,7 +56,6 @@ namespace JPP.Services.Services
                     EventOrganizer = request.EventOrganizer,
                     EventDateTime = request.EventDateTime.Value,
                     Duration = request.Duration.Value
-
                 });
 
                 return BaseResult<int>.Ok(newId, "The event was successfully added.", 200);

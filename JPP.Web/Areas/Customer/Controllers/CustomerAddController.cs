@@ -103,7 +103,6 @@ namespace JPP.Web.Areas.Customer.Controllers
             {
                 TempData["ErrorMessage"] = result.StatusMessage;
 
-                // JIKA GAGAL SIMPAN, AMBIL ULANG JUGA KEDUA DATANYA
                 var events = await _eventService.GetDropdownListAsync();
                 var stores = await _storeService.GetStoreDropdownListAsync();
 

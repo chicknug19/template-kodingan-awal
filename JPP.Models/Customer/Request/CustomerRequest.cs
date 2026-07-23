@@ -25,7 +25,7 @@ namespace JPP.Models.Customer.Request
 
         //public string? PhoneNumber2 { get; set; }
         [Required(ErrorMessage = "Email Address cannot be empty.")]
-        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email format. Example: name@domain.com")]
+        [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z]{2,}$", ErrorMessage = "Invalid email format. Example: name@domain.com")]
         public string? EmailAddress { get; set; }
 
         [Required(ErrorMessage = "Address is required")]
