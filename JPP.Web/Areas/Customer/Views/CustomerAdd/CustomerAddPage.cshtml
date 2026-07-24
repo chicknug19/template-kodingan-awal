@@ -123,6 +123,10 @@
                     <hr class="text-muted opacity-25 my-1" />
                 </div>
 
+                <div class="col-xl-4 col-md-6">
+                    <label class="form-label admin-form-label">Account Number</label>
+                    <input type="text" id="AccountNumberPreview" name="AccountNumber" value="@form.AccountNumber" class="form-control bg-light" readonly placeholder="Auto-generated after selecting a Store" />
+                </div>
 
                 <div class="col-xl-4 col-md-6">
                     <label class="form-label admin-form-label">Phone Number <span class="text-danger">*</span></label>
@@ -143,7 +147,7 @@
                 </div>
 
                 <div class="col-xl-4 col-md-6">
-                    <label class="form-label admin-form-label">Email Address</label>
+                    <label class="form-label admin-form-label">Email Address <span class="text-danger">*</span></label>
                     <input type="text" name="EmailAddress" value="@form.EmailAddress" class="form-control" @disabled />
                     @Html.ValidationMessage("EmailAddress", "", new { @class = "text-danger small mt-1 d-block" })
                 </div>
@@ -212,13 +216,6 @@
                     </select>
                     @Html.ValidationMessage("StoreId", "", new { @class = "text-danger small mt-1 d-block" })
                 </div>
-
-                <div class="col-xl-12 col-md-12">
-                    <label class="form-label admin-form-label">Account Number</label>
-                    <input type="text" id="AccountNumberPreview" name="AccountNumber" value="@form.AccountNumber" class="form-control bg-light" readonly placeholder="Auto-generated after selecting a Store" />
-                </div>
-
-
             </div>
         </div>
     </div>
