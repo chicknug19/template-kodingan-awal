@@ -64,5 +64,16 @@ namespace JPP.Data.Repositories
 
             return result.ToList();
         }
+
+        public async Task<bool> DeleteEventAsync(int id)
+        {
+            const string sql = @"DELETE FROM BIZ_Event WHERE Id = @Id;";
+
+            using var conn = _crmDbConnectionFactory.Create();
+
+            var rowsAffected = await conn.ExecuteAsync(sql, new { Id = id });
+
+            return rowsAffected > 0;
+        }
     }
 }
